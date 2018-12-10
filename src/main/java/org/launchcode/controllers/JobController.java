@@ -25,8 +25,8 @@ public class JobController {
     public String index(Model model, int id) {
 
         // TODO #1 - get the Job with the given ID and pass it into the view
-
         Job job = jobData.findById(id);
+        model.addAttribute(job);
 
         return "job-detail";
     }
@@ -43,8 +43,15 @@ public class JobController {
         // TODO #6 - Validate the JobForm model, and if valid, create a
         // new Job and add it to the jobData data store. Then
         // redirect to the job detail view for the new Job.
+        if (errors.hasErrors()){
+            return "new-job";
+        }
+        Job job =  new Job(jobForm.getName(), jobData.getEmployers().findById(jobForm.getEmployerId()),
+                jobData.getLocations().findById(jobForm.getLocationId()),
+                jobData.getPositionTypes().findById(jobForm.getPositionTypeId()),
+                jobData.getCoreCompetencies().findById(jobForm.getCoreCompetencyId()));
+        jobData.add(job);
 
-        return "";
-
+        return "redirect:/job?id=" + job.getId();
     }
 }
